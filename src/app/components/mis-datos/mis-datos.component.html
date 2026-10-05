@@ -1,0 +1,103 @@
+<ion-header>
+
+  <ion-toolbar>
+
+    <ion-buttons slot="start">
+
+      <ion-back-button defaultHref="/home">
+      </ion-back-button>
+
+    </ion-buttons>
+
+    <ion-title>
+      Mis Datos
+    </ion-title>
+
+  </ion-toolbar>
+
+</ion-header>
+
+
+<ion-content class="ion-padding">
+
+  <ion-card>
+
+    <ion-card-header>
+
+      <ion-card-title>
+        Foto de perfil
+      </ion-card-title>
+
+      <ion-card-subtitle>
+        Selecciona una foto para tu perfil
+      </ion-card-subtitle>
+
+    </ion-card-header>
+
+
+    <ion-card-content>
+
+
+      <!-- SELECTOR DE FOTO -->
+      <input
+        #selectorFoto
+        type="file"
+        accept="image/*"
+        (change)="seleccionarFoto($event)"
+        style="display: none;"
+      >
+
+
+      <!-- BOTÓN GALERÍA -->
+      <ion-button
+        expand="block"
+        (click)="selectorFoto.click()">
+
+        ELEGIR FOTO DE GALERÍA
+
+      </ion-button>
+
+
+      <!-- ELIMINAR FOTO -->
+      <ion-button
+        expand="block"
+        color="danger"
+        fill="outline"
+        (click)="limpiarFoto()"
+        [disabled]="!fotoBase64">
+
+        ELIMINAR FOTO
+
+      </ion-button>
+
+
+      <!-- FOTO -->
+      <div
+        *ngIf="fotoBase64"
+        style="margin-top: 20px;"
+        @zoomFade>
+
+        <ion-img
+          [src]="fotoBase64">
+        </ion-img>
+
+      </div>
+
+
+      <!-- SIN FOTO -->
+      <ion-text
+        color="medium"
+        *ngIf="!fotoBase64">
+
+        <p>
+          No hay foto de perfil seleccionada.
+        </p>
+
+      </ion-text>
+
+
+    </ion-card-content>
+
+  </ion-card>
+
+</ion-content>

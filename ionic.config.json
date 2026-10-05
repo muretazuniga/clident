@@ -1,0 +1,7 @@
+{
+  "name": "CLIDENT" ,
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}

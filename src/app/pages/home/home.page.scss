@@ -1,0 +1,60 @@
+/* BIENVENIDA */
+
+.bienvenida {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.bienvenida h1 {
+  font-weight: 700;
+}
+
+.bienvenida p {
+  color: #667085;
+}
+
+
+/* TARJETAS */
+
+ion-card {
+  text-align: center;
+}
+
+ion-card-header {
+  text-align: center;
+}
+
+ion-card-title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+ion-card-content {
+  text-align: center;
+}
+
+ion-card-content p {
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+
+/* BOTONES */
+
+ion-card ion-button {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+/* LOGO CLIDENT */
+
+.logo-clident {
+  font-family: 'Trebuchet MS', sans-serif;
+  font-size: 25px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-align: center;
+}

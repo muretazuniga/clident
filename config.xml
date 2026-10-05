@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget
+  id="cl.bustos.clident"
+  version="1.0.0"
+  xmlns="http://www.w3.org/ns/widgets"
+  xmlns:cdv="http://cordova.apache.org/ns/1.0">
+
+  <name>CLIDENT</name>
+
+  <description>
+    Aplicación móvil para la gestión de pacientes y citas médicas.
+  </description>
+
+  <author email="tucorreo@gmail.com">
+    Tu Nombre
+  </author>
+
+  <preference name="android-minSdkVersion" value="22" />
+  <preference name="android-targetSdkVersion" value="34" />
+
+</widget>

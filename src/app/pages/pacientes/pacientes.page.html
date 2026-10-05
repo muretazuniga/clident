@@ -1,0 +1,461 @@
+<ion-header>
+
+  <ion-toolbar>
+
+    <ion-buttons slot="start">
+
+      <ion-back-button defaultHref="/home">
+      </ion-back-button>
+
+    </ion-buttons>
+
+    <ion-title>
+      Pacientes
+    </ion-title>
+
+  </ion-toolbar>
+
+</ion-header>
+
+
+<ion-content class="ion-padding">
+
+
+  <!-- ======================================== -->
+  <!-- FORMULARIO PACIENTE -->
+  <!-- ======================================== -->
+
+  <ion-card>
+
+    <ion-card-header>
+
+      <ion-card-title>
+
+        {{
+          idEditando !== null
+          ? 'Editar paciente'
+          : 'Agregar paciente'
+        }}
+
+      </ion-card-title>
+
+    </ion-card-header>
+
+
+    <ion-card-content>
+
+
+      <!-- NOMBRE -->
+
+      <ion-item>
+
+        <ion-input
+          label="Nombre completo"
+          labelPlacement="stacked"
+          placeholder="Ej: Catalina González"
+          [(ngModel)]="nombre">
+
+        </ion-input>
+
+      </ion-item>
+
+
+      <!-- RUT -->
+
+      <ion-item>
+
+        <ion-input
+          label="RUT"
+          labelPlacement="stacked"
+          placeholder="Ej: 18.345.672-1"
+          [(ngModel)]="rut">
+
+        </ion-input>
+
+      </ion-item>
+
+
+      <!-- FECHA NACIMIENTO -->
+
+      <ion-item>
+
+        <ion-input
+          type="date"
+          label="Fecha de nacimiento"
+          labelPlacement="stacked"
+          [(ngModel)]="fechaNacimiento">
+
+        </ion-input>
+
+      </ion-item>
+
+
+      <!-- TELÉFONO -->
+
+      <ion-item>
+
+        <ion-input
+          type="tel"
+          label="Teléfono"
+          labelPlacement="stacked"
+          placeholder="+56 9 1234 5678"
+          [(ngModel)]="telefono">
+
+        </ion-input>
+
+      </ion-item>
+
+
+      <!-- CORREO -->
+
+      <ion-item>
+
+        <ion-input
+          type="email"
+          label="Correo electrónico"
+          labelPlacement="stacked"
+          placeholder="paciente@example.com"
+          [(ngModel)]="email">
+
+        </ion-input>
+
+      </ion-item>
+
+
+      <!-- GUARDAR -->
+
+      <ion-button
+        expand="block"
+        (click)="guardarPaciente()">
+
+        {{
+          idEditando !== null
+          ? 'GUARDAR CAMBIOS'
+          : 'AGREGAR PACIENTE'
+        }}
+
+      </ion-button>
+
+
+      <!-- CANCELAR -->
+
+      <ion-button
+        *ngIf="idEditando !== null"
+        expand="block"
+        fill="outline"
+        color="medium"
+        (click)="cancelarEdicion()">
+
+        CANCELAR EDICIÓN
+
+      </ion-button>
+
+
+    </ion-card-content>
+
+  </ion-card>
+
+
+
+  <!-- ======================================== -->
+  <!-- HISTORIAL DEL PACIENTE -->
+  <!-- ======================================== -->
+
+  <ion-card *ngIf="pacienteHistorial">
+
+    <ion-card-header>
+
+      <ion-card-title>
+        Historial de atenciones
+      </ion-card-title>
+
+      <ion-card-subtitle>
+
+        {{ pacienteHistorial.name }}
+
+      </ion-card-subtitle>
+
+    </ion-card-header>
+
+
+    <ion-card-content>
+
+
+      <!-- SI TIENE ATENCIONES -->
+
+      <ion-list
+        *ngIf="
+          atencionesPaciente.length > 0;
+          else sinAtenciones
+        ">
+
+
+        <ion-item
+          *ngFor="let atencion of atencionesPaciente">
+
+          <ion-label>
+
+
+            <h2>
+
+              <strong>
+                {{ atencion.fecha | date:'dd/MM/yyyy' }}
+              </strong>
+
+            </h2>
+
+
+            <p>
+
+              <strong>
+                Profesional:
+              </strong>
+
+              {{ atencion.profesional }}
+
+            </p>
+
+
+            <p>
+
+              <strong>
+                Diagnóstico:
+              </strong>
+
+              {{ atencion.diagnostico }}
+
+            </p>
+
+
+            <p>
+
+              <strong>
+                Tratamiento:
+              </strong>
+
+              {{ atencion.tratamiento }}
+
+            </p>
+
+
+            <p *ngIf="atencion.observaciones">
+
+              <strong>
+                Observaciones:
+              </strong>
+
+              {{ atencion.observaciones }}
+
+            </p>
+
+
+          </ion-label>
+
+        </ion-item>
+
+      </ion-list>
+
+
+
+      <!-- SIN ATENCIONES -->
+
+      <ng-template #sinAtenciones>
+
+        <ion-text color="medium">
+
+          <p>
+            Este paciente aún no tiene atenciones registradas.
+          </p>
+
+        </ion-text>
+
+      </ng-template>
+
+
+
+      <!-- CERRAR -->
+
+      <ion-button
+        expand="block"
+        fill="outline"
+        color="medium"
+        (click)="cerrarHistorial()">
+
+        CERRAR HISTORIAL
+
+      </ion-button>
+
+
+    </ion-card-content>
+
+  </ion-card>
+
+
+
+  <!-- ======================================== -->
+  <!-- PACIENTES REGISTRADOS -->
+  <!-- ======================================== -->
+
+  <ion-card
+    *ngIf="
+      pacientes.length > 0;
+      else sinDatos
+    ">
+
+    <ion-card-header>
+
+      <ion-card-title>
+        Pacientes registrados
+      </ion-card-title>
+
+    </ion-card-header>
+
+
+    <ion-card-content>
+
+      <ion-list>
+
+
+        <ion-item
+          *ngFor="let p of pacientes">
+
+          <ion-label>
+
+
+            <h2>
+
+              <strong>
+                {{ p.name }}
+              </strong>
+
+            </h2>
+
+
+            <p>
+
+              <strong>
+                RUT:
+              </strong>
+
+              {{ p.rut }}
+
+            </p>
+
+
+            <p>
+
+              <strong>
+                Fecha de nacimiento:
+              </strong>
+
+              {{
+                p.fechaNacimiento
+                | date:'dd/MM/yyyy'
+              }}
+
+            </p>
+
+
+            <p>
+
+              <strong>
+                Teléfono:
+              </strong>
+
+              {{ p.phone }}
+
+            </p>
+
+
+            <p>
+
+              <strong>
+                Correo:
+              </strong>
+
+              {{ p.email }}
+
+            </p>
+
+
+
+            <!-- VER HISTORIAL -->
+
+            <ion-button
+              color="success"
+              fill="outline"
+              size="small"
+              (click)="verHistorial(p)">
+
+              VER HISTORIAL
+
+            </ion-button>
+
+
+
+            <!-- EDITAR -->
+
+            <ion-button
+              color="primary"
+              fill="outline"
+              size="small"
+              (click)="editarPaciente(p)">
+
+              EDITAR
+
+            </ion-button>
+
+
+
+            <!-- ELIMINAR -->
+
+            <ion-button
+              color="danger"
+              fill="outline"
+              size="small"
+              (click)="eliminarPaciente(p.id)">
+
+              ELIMINAR
+
+            </ion-button>
+
+
+          </ion-label>
+
+        </ion-item>
+
+
+      </ion-list>
+
+    </ion-card-content>
+
+  </ion-card>
+
+
+
+  <!-- ======================================== -->
+  <!-- SIN PACIENTES -->
+  <!-- ======================================== -->
+
+  <ng-template #sinDatos>
+
+    <ion-card>
+
+      <ion-card-content>
+
+        <ion-text color="medium">
+
+          <p>
+            No hay pacientes registrados.
+          </p>
+
+        </ion-text>
+
+      </ion-card-content>
+
+    </ion-card>
+
+  </ng-template>
+
+
+</ion-content>

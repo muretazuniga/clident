@@ -1,0 +1,49 @@
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>Experiencia Laboral</ion-card-title>
+  </ion-card-header>
+
+  <ion-card-content>
+    <ion-item>
+      <ion-label position="floating">Empresa</ion-label>
+      <ion-input [(ngModel)]="experiencia.empresa"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Año inicio</ion-label>
+      <ion-input type="number" [(ngModel)]="experiencia.anioInicio"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Actualmente trabaja ahí</ion-label>
+      <ion-checkbox slot="end" [(ngModel)]="experiencia.trabajaActualmente"></ion-checkbox>
+    </ion-item>
+
+    <ion-item *ngIf="!experiencia.trabajaActualmente">
+      <ion-label position="floating">Año término</ion-label>
+      <ion-input type="number" [(ngModel)]="experiencia.anioTermino"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Cargo</ion-label>
+      <ion-input [(ngModel)]="experiencia.cargo"></ion-input>
+    </ion-item>
+
+    <ion-button expand="block" (click)="agregarExperiencia()">
+      Agregar experiencia
+    </ion-button>
+
+    <ion-list *ngIf="experienciasGuardadas.length">
+      <ion-list-header>Experiencias registradas</ion-list-header>
+      <ion-item *ngFor="let exp of experienciasGuardadas">
+        <ion-label>
+          <h2>{{ exp.empresa }} - {{ exp.cargo }}</h2>
+          <p>
+            {{ exp.anioInicio }} -
+            {{ exp.trabajaActualmente ? 'Actualidad' : exp.anioTermino }}
+          </p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </ion-card-content>
+</ion-card>

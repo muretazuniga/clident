@@ -1,0 +1,154 @@
+<ion-header>
+  <ion-toolbar>
+
+    <ion-title class="logo-clident">CLIDENT</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button routerLink="/mis-datos" class="avatar-button">
+
+        <ion-avatar *ngIf="fotoPerfil; else sinFoto" class="avatar">
+          <img [src]="fotoPerfil" alt="Foto de perfil">
+        </ion-avatar>
+
+        <ng-template #sinFoto>
+          <div class="avatar-placeholder">
+            👩🏻
+          </div>
+        </ng-template>
+
+      </ion-button>
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content class="ion-padding">
+
+
+
+
+  <!-- PACIENTES -->
+  <ion-card>
+
+    <ion-card-header>
+      <ion-card-title>
+        Pacientes
+      </ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+
+      <p>
+        Consulta y administra la información de los pacientes.
+      </p>
+
+      <ion-button
+        expand="block"
+        routerLink="/pacientes">
+
+        VER PACIENTES
+
+      </ion-button>
+
+    </ion-card-content>
+
+  </ion-card>
+
+
+  <!-- PROFESIONALES -->
+  <ion-card>
+
+    <ion-card-header>
+      <ion-card-title>
+        Profesionales
+      </ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+
+      <p>
+        Consulta y administra los profesionales de la clínica.
+      </p>
+
+      <ion-button
+        expand="block"
+        routerLink="/profesionales">
+
+        VER PROFESIONALES
+
+      </ion-button>
+
+    </ion-card-content>
+
+  </ion-card>
+
+
+  <!-- CITAS -->
+  <ion-card>
+
+    <ion-card-header>
+      <ion-card-title>
+        Citas
+      </ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+
+      <p>
+        Consulta y administra las citas registradas.
+      </p>
+
+      <ion-button
+        expand="block"
+        routerLink="/citas">
+
+        VER CITAS
+
+      </ion-button>
+
+    </ion-card-content>
+
+  </ion-card>
+
+
+  <!-- MIS DATOS -->
+  <ion-card>
+
+    <ion-card-header>
+      <ion-card-title>
+        Mis datos
+      </ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+
+      <p>
+        Consulta la información asociada al usuario.
+      </p>
+
+      <ion-button
+        expand="block"
+        routerLink="/mis-datos">
+
+        VER MIS DATOS
+
+      </ion-button>
+
+    </ion-card-content>
+
+  </ion-card>
+
+
+  <!-- CERRAR SESIÓN -->
+  <ion-button
+    expand="block"
+    color="danger"
+    fill="outline"
+    (click)="cerrarSesion()">
+
+    CERRAR SESIÓN
+
+  </ion-button>
+
+</ion-content>

@@ -1,0 +1,463 @@
+<ion-header>
+  <ion-toolbar>
+
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home">
+      </ion-back-button>
+    </ion-buttons>
+
+    <ion-title>Citas</ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content class="ion-padding">
+
+  <!-- ======================================== -->
+  <!-- AGENDAR / EDITAR CITA -->
+  <!-- ======================================== -->
+
+  <ion-card>
+
+    <ion-card-header>
+      <ion-card-title>
+        {{ idEditando !== null ? 'Editar cita' : 'Agendar cita' }}
+      </ion-card-title>
+    </ion-card-header>
+
+
+    <ion-card-content>
+
+      <!-- PACIENTE -->
+      <ion-item>
+
+        <ion-select
+          label="Paciente"
+          labelPlacement="stacked"
+          placeholder="Seleccionar paciente"
+          [(ngModel)]="pacienteSeleccionado">
+
+          <ion-select-option
+            *ngFor="let paciente of pacientes"
+            [value]="paciente">
+
+            {{ paciente.name }}
+
+          </ion-select-option>
+
+        </ion-select>
+
+      </ion-item>
+
+
+      <!-- PROFESIONAL -->
+      <ion-item>
+
+        <ion-select
+          label="Profesional"
+          labelPlacement="stacked"
+          placeholder="Seleccionar profesional"
+          [(ngModel)]="profesionalSeleccionado">
+
+          <ion-select-option
+            *ngFor="let profesional of profesionales"
+            [value]="profesional">
+
+            {{ profesional.nombre }}
+            {{ profesional.apellido }}
+            -
+            {{ profesional.especialidad }}
+
+          </ion-select-option>
+
+        </ion-select>
+
+      </ion-item>
+
+
+      <!-- FECHA -->
+      <ion-item>
+
+        <ion-input
+          type="date"
+          label="Fecha"
+          labelPlacement="stacked"
+          [(ngModel)]="fechaSeleccionada">
+
+        </ion-input>
+
+      </ion-item>
+
+
+      <!-- HORA -->
+      <ion-item>
+
+        <ion-select
+          label="Hora"
+          labelPlacement="stacked"
+          placeholder="Seleccionar hora"
+          [(ngModel)]="horaSeleccionada">
+
+          <ion-select-option
+            *ngFor="let hora of horas"
+            [value]="hora">
+
+            {{ hora }}
+
+          </ion-select-option>
+
+        </ion-select>
+
+      </ion-item>
+
+
+      <!-- MOTIVO -->
+      <ion-item>
+
+        <ion-input
+          label="Motivo"
+          labelPlacement="stacked"
+          placeholder="Ej: Control dental"
+          [(ngModel)]="motivo">
+
+        </ion-input>
+
+      </ion-item>
+
+
+      <!-- GUARDAR CITA -->
+      <ion-button
+        expand="block"
+        (click)="confirmarCita()">
+
+        {{
+          idEditando !== null
+          ? 'GUARDAR CAMBIOS'
+          : 'CONFIRMAR CITA'
+        }}
+
+      </ion-button>
+
+
+      <!-- CANCELAR EDICIÓN -->
+      <ion-button
+        *ngIf="idEditando !== null"
+        expand="block"
+        fill="outline"
+        color="medium"
+        (click)="cancelarEdicion()">
+
+        CANCELAR EDICIÓN
+
+      </ion-button>
+
+    </ion-card-content>
+
+  </ion-card>
+
+
+
+  <!-- ======================================== -->
+  <!-- REGISTRAR ATENCIÓN -->
+  <!-- ======================================== -->
+
+  <ion-card *ngIf="citaAtencion">
+
+    <ion-card-header>
+
+      <ion-card-title>
+        Registrar atención
+      </ion-card-title>
+
+      <ion-card-subtitle>
+
+        Paciente:
+        {{ citaAtencion.paciente }}
+
+        <br>
+
+        Profesional:
+        {{ citaAtencion.profesional }}
+
+      </ion-card-subtitle>
+
+    </ion-card-header>
+
+
+    <ion-card-content>
+
+
+      <!-- DIAGNÓSTICO -->
+      <ion-item>
+
+        <ion-textarea
+          label="Diagnóstico"
+          labelPlacement="stacked"
+          placeholder="Ej: Caries oclusal en pieza 3.6"
+          [(ngModel)]="diagnostico">
+
+        </ion-textarea>
+
+      </ion-item>
+
+
+      <!-- TRATAMIENTO -->
+      <ion-item>
+
+        <ion-textarea
+          label="Tratamiento realizado"
+          labelPlacement="stacked"
+          placeholder="Ej: Restauración con resina compuesta"
+          [(ngModel)]="tratamiento">
+
+        </ion-textarea>
+
+      </ion-item>
+
+
+      <!-- OBSERVACIONES -->
+      <ion-item>
+
+        <ion-textarea
+          label="Observaciones"
+          labelPlacement="stacked"
+          placeholder="Ej: Control en 30 días"
+          [(ngModel)]="observaciones">
+
+        </ion-textarea>
+
+      </ion-item>
+
+
+      <!-- GUARDAR ATENCIÓN -->
+      <ion-button
+        expand="block"
+        color="success"
+        (click)="guardarAtencion()">
+
+        GUARDAR ATENCIÓN
+
+      </ion-button>
+
+
+      <!-- CANCELAR -->
+      <ion-button
+        expand="block"
+        fill="outline"
+        color="medium"
+        (click)="cancelarAtencion()">
+
+        CANCELAR
+
+      </ion-button>
+
+    </ion-card-content>
+
+  </ion-card>
+
+
+
+  <!-- ======================================== -->
+  <!-- CITAS REGISTRADAS -->
+  <!-- ======================================== -->
+
+  <ion-card *ngIf="citas.length > 0">
+
+    <ion-card-header>
+
+      <ion-card-title>
+        Citas registradas
+      </ion-card-title>
+
+    </ion-card-header>
+
+
+    <ion-card-content>
+
+      <ion-list>
+
+
+        <ion-item *ngFor="let cita of citas">
+
+          <ion-label>
+
+
+            <!-- PACIENTE -->
+            <h2>
+
+              {{
+                cita.paciente ||
+                'Cita anterior sin paciente'
+              }}
+
+            </h2>
+
+
+            <!-- PROFESIONAL -->
+            <p>
+
+              <strong>
+                Profesional:
+              </strong>
+
+              {{ cita.profesional }}
+
+            </p>
+
+
+            <!-- ESPECIALIDAD -->
+            <p>
+
+              <strong>
+                Especialidad:
+              </strong>
+
+              {{ cita.especialidad }}
+
+            </p>
+
+
+            <!-- FECHA -->
+            <p>
+
+              <strong>
+                Fecha:
+              </strong>
+
+              {{ cita.fecha }}
+
+            </p>
+
+
+            <!-- HORA -->
+            <p>
+
+              <strong>
+                Hora:
+              </strong>
+
+              {{ cita.hora }}
+
+            </p>
+
+
+            <!-- MOTIVO -->
+            <p>
+
+              <strong>
+                Motivo:
+              </strong>
+
+              {{ cita.motivo }}
+
+            </p>
+
+
+
+            <!-- ======================================== -->
+            <!-- ATENCIÓN REGISTRADA -->
+            <!-- ======================================== -->
+
+            <div *ngIf="obtenerAtencion(cita.id) as atencion">
+
+              <hr>
+
+              <p>
+                <strong>
+                  Atención registrada
+                </strong>
+              </p>
+
+
+              <p>
+
+                <strong>
+                  Diagnóstico:
+                </strong>
+
+                {{ atencion.diagnostico }}
+
+              </p>
+
+
+              <p>
+
+                <strong>
+                  Tratamiento:
+                </strong>
+
+                {{ atencion.tratamiento }}
+
+              </p>
+
+
+              <p *ngIf="atencion.observaciones">
+
+                <strong>
+                  Observaciones:
+                </strong>
+
+                {{ atencion.observaciones }}
+
+              </p>
+
+            </div>
+
+
+
+            <!-- ======================================== -->
+            <!-- BOTONES -->
+            <!-- ======================================== -->
+
+
+            <!-- REGISTRAR ATENCIÓN -->
+            <ion-button
+              *ngIf="!obtenerAtencion(cita.id)"
+              color="success"
+              fill="outline"
+              size="small"
+              (click)="abrirAtencion(cita)">
+
+              REGISTRAR ATENCIÓN
+
+            </ion-button>
+
+
+            <!-- EDITAR -->
+            <ion-button
+              *ngIf="cita.pacienteId"
+              color="primary"
+              fill="outline"
+              size="small"
+              (click)="editarCita(cita)">
+
+              EDITAR
+
+            </ion-button>
+
+
+            <!-- ELIMINAR -->
+            <ion-button
+              color="danger"
+              fill="outline"
+              size="small"
+              (click)="eliminarCita(cita.id)">
+
+              ELIMINAR
+
+            </ion-button>
+
+
+          </ion-label>
+
+        </ion-item>
+
+
+      </ion-list>
+
+    </ion-card-content>
+
+  </ion-card>
+
+</ion-content>

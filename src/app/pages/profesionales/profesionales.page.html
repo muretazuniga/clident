@@ -1,0 +1,125 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+
+    <ion-title>Profesionales</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <div class="titulo">
+    <h1>Gestión de profesionales</h1>
+    <p>Administra los profesionales de la clínica dental.</p>
+  </div>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Agregar profesional</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+
+      <ion-item>
+        <ion-input
+          label="Nombre"
+          labelPlacement="stacked"
+          [(ngModel)]="nombre"
+          placeholder="Ej: Camila">
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-input
+          label="Apellido"
+          labelPlacement="stacked"
+          [(ngModel)]="apellido"
+          placeholder="Ej: Rojas">
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-select
+          label="Especialidad"
+          labelPlacement="stacked"
+          [(ngModel)]="especialidad"
+          placeholder="Seleccionar especialidad">
+
+          <ion-select-option value="Odontología General">
+            Odontología General
+          </ion-select-option>
+
+          <ion-select-option value="Ortodoncia">
+            Ortodoncia
+          </ion-select-option>
+
+          <ion-select-option value="Endodoncia">
+            Endodoncia
+          </ion-select-option>
+
+          <ion-select-option value="Periodoncia">
+            Periodoncia
+          </ion-select-option>
+
+          <ion-select-option value="Odontopediatría">
+            Odontopediatría
+          </ion-select-option>
+
+        </ion-select>
+      </ion-item>
+
+      <ion-button
+  expand="block"
+  (click)="agregarProfesional()">
+
+  {{ idEditando !== null ? 'GUARDAR CAMBIOS' : 'AGREGAR PROFESIONAL' }}
+
+</ion-button>
+
+    </ion-card-content>
+  </ion-card>
+
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Profesionales registrados</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+
+      <ion-list>
+
+        <ion-item *ngFor="let profesional of profesionales">
+
+          <ion-label>
+            <h2>
+              {{ profesional.nombre }} {{ profesional.apellido }}
+            </h2>
+
+            <p>{{ profesional.especialidad }}</p>
+          </ion-label>
+
+          <ion-button
+  color="primary"
+  fill="outline"
+  (click)="editarProfesional(profesional)">
+  EDITAR
+</ion-button>
+
+<ion-button
+  color="danger"
+  fill="outline"
+  (click)="eliminarProfesional(profesional.id)">
+  ELIMINAR
+</ion-button>
+
+        </ion-item>
+
+      </ion-list>
+
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>

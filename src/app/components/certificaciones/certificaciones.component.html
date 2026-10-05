@@ -1,0 +1,50 @@
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>Certificaciones</ion-card-title>
+  </ion-card-header>
+
+  <ion-card-content>
+    <ion-item>
+      <ion-label position="floating">Nombre del certificado</ion-label>
+      <ion-input [(ngModel)]="certificacion.nombre"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Fecha de obtención</ion-label>
+      <ion-datetime
+        presentation="date"
+        [(ngModel)]="certificacion.fechaObtencion">
+      </ion-datetime>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>¿Tiene vencimiento?</ion-label>
+      <ion-checkbox slot="end" [(ngModel)]="certificacion.tieneVencimiento"></ion-checkbox>
+    </ion-item>
+
+    <ion-item *ngIf="certificacion.tieneVencimiento">
+      <ion-label position="floating">Fecha de vencimiento</ion-label>
+      <ion-datetime
+        presentation="date"
+        [(ngModel)]="certificacion.fechaVencimiento">
+      </ion-datetime>
+    </ion-item>
+
+    <ion-button expand="block" (click)="agregarCertificacion()">
+      Agregar certificación
+    </ion-button>
+
+    <ion-list *ngIf="certificaciones.length">
+      <ion-list-header>Certificaciones registradas</ion-list-header>
+      <ion-item *ngFor="let cert of certificaciones">
+        <ion-label>
+          <h2>{{ cert.nombre }}</h2>
+          <p>Obtenida: {{ cert.fechaObtencion | date:'dd/MM/yyyy' }}</p>
+          <p *ngIf="cert.tieneVencimiento">
+            Vence: {{ cert.fechaVencimiento | date:'dd/MM/yyyy' }}
+          </p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </ion-card-content>
+</ion-card>

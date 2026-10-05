@@ -1,0 +1,84 @@
+<ion-header>
+  <ion-toolbar>
+
+    <ion-title>CLIDENT</ion-title>
+
+    <ion-buttons slot="end">
+
+      <ion-button class="avatar-button" routerLink="/mis-datos">
+
+        <ion-avatar class="avatar" *ngIf="fotoPerfil">
+          <img
+            [src]="fotoPerfil"
+            alt="Foto de perfil"
+          />
+        </ion-avatar>
+
+        <div class="avatar-placeholder" *ngIf="!fotoPerfil">
+          👩🏻
+        </div>
+
+      </ion-button>
+
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Gestión de pacientes</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <p>Consulta y administra la información de los pacientes.</p>
+
+      <ion-button expand="block" routerLink="/pacientes">
+        VER PACIENTES
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Gestión de citas</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <p>Consulta y administra las citas registradas.</p>
+
+      <ion-button expand="block" routerLink="/citas">
+        VER CITAS
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Mis datos</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <p>Consulta la información asociada al usuario.</p>
+
+      <ion-button expand="block" routerLink="/mis-datos">
+        VER MIS DATOS
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <div class="ion-padding">
+    <ion-button
+      expand="block"
+      color="danger"
+      fill="outline"
+      (click)="cerrarSesion()">
+      CERRAR SESIÓN
+    </ion-button>
+  </div>
+
+</ion-content>
