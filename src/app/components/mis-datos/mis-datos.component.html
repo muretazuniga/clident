@@ -3,14 +3,15 @@
   <ion-toolbar>
 
     <ion-buttons slot="start">
+      <ion-menu-button aria-label="Abrir menú"></ion-menu-button>
 
-      <ion-back-button defaultHref="/home">
+      <ion-back-button defaultHref="/home" text="Volver">
       </ion-back-button>
 
     </ion-buttons>
 
     <ion-title>
-      Mis Datos
+      Mis datos
     </ion-title>
 
   </ion-toolbar>
@@ -19,6 +20,7 @@
 
 
 <ion-content class="ion-padding">
+  <div class="page-shell profile-shell">
 
   <ion-card>
 
@@ -53,7 +55,7 @@
         expand="block"
         (click)="selectorFoto.click()">
 
-        ELEGIR FOTO DE GALERÍA
+        Elegir foto de galería
 
       </ion-button>
 
@@ -66,7 +68,7 @@
         (click)="limpiarFoto()"
         [disabled]="!fotoBase64">
 
-        ELIMINAR FOTO
+        Eliminar foto
 
       </ion-button>
 
@@ -74,10 +76,11 @@
       <!-- FOTO -->
       <div
         *ngIf="fotoBase64"
-        style="margin-top: 20px;"
+        class="profile-photo"
         @zoomFade>
 
         <ion-img
+          alt="Foto de perfil"
           [src]="fotoBase64">
         </ion-img>
 
@@ -100,4 +103,5 @@
 
   </ion-card>
 
+  </div>
 </ion-content>

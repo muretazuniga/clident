@@ -1,10 +1,12 @@
 <ion-header>
   <ion-toolbar>
-
-    <ion-title class="logo-clident">CLIDENT</ion-title>
+    <ion-buttons slot="start">
+      <ion-menu-button aria-label="Abrir menú"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Inicio</ion-title>
 
     <ion-buttons slot="end">
-      <ion-button routerLink="/mis-datos" class="avatar-button">
+      <ion-button routerLink="/mis-datos" class="avatar-button" aria-label="Ver mis datos">
 
         <ion-avatar *ngIf="fotoPerfil; else sinFoto" class="avatar">
           <img [src]="fotoPerfil" alt="Foto de perfil">
@@ -12,7 +14,7 @@
 
         <ng-template #sinFoto>
           <div class="avatar-placeholder">
-            👩🏻
+            <ion-icon name="person" aria-hidden="true"></ion-icon>
           </div>
         </ng-template>
 
@@ -24,15 +26,17 @@
 
 
 <ion-content class="ion-padding">
-
-
-
-
+  <div class="page-shell">
+    <div class="page-heading">
+      <h1>Gestión clínica</h1>
+    </div>
+    <div class="module-grid">
   <!-- PACIENTES -->
   <ion-card>
 
     <ion-card-header>
       <ion-card-title>
+        <ion-icon name="people" aria-hidden="true"></ion-icon>
         Pacientes
       </ion-card-title>
     </ion-card-header>
@@ -47,7 +51,7 @@
         expand="block"
         routerLink="/pacientes">
 
-        VER PACIENTES
+        Ver pacientes
 
       </ion-button>
 
@@ -61,6 +65,7 @@
 
     <ion-card-header>
       <ion-card-title>
+        <ion-icon name="medical" aria-hidden="true"></ion-icon>
         Profesionales
       </ion-card-title>
     </ion-card-header>
@@ -75,7 +80,7 @@
         expand="block"
         routerLink="/profesionales">
 
-        VER PROFESIONALES
+        Ver profesionales
 
       </ion-button>
 
@@ -89,6 +94,7 @@
 
     <ion-card-header>
       <ion-card-title>
+        <ion-icon name="calendar" aria-hidden="true"></ion-icon>
         Citas
       </ion-card-title>
     </ion-card-header>
@@ -103,7 +109,7 @@
         expand="block"
         routerLink="/citas">
 
-        VER CITAS
+        Ver citas
 
       </ion-button>
 
@@ -117,6 +123,7 @@
 
     <ion-card-header>
       <ion-card-title>
+        <ion-icon name="person" aria-hidden="true"></ion-icon>
         Mis datos
       </ion-card-title>
     </ion-card-header>
@@ -131,15 +138,15 @@
         expand="block"
         routerLink="/mis-datos">
 
-        VER MIS DATOS
+        Ver mis datos
 
       </ion-button>
 
     </ion-card-content>
 
   </ion-card>
-
-
+    </div>
+    <div class="session-actions">
   <!-- CERRAR SESIÓN -->
   <ion-button
     expand="block"
@@ -147,8 +154,9 @@
     fill="outline"
     (click)="cerrarSesion()">
 
-    CERRAR SESIÓN
+    Cerrar sesión
 
   </ion-button>
-
+    </div>
+  </div>
 </ion-content>

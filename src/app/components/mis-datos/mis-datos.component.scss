@@ -1,0 +1,8 @@
+.profile-shell { max-width: 640px; }
+ion-card-content { display: grid; gap: 12px; }
+.profile-photo { margin-top: 12px; padding: 16px; background: #f4f6f9; border: 1px solid var(--cl-border); border-radius: 6px; }
+.profile-photo ion-img { width: 100%; max-width: 360px; height: 280px; margin: 0 auto; }
+.profile-photo ion-img::part(image) { width: 100%; height: 100%; object-fit: contain; }
+ion-text p { margin: 12px 0 0; line-height: 1.6; }
+@media (max-width: 767px) { .profile-photo ion-img { height: 220px; } }
+@media (prefers-reduced-motion: reduce) { .profile-photo { animation: none; transition: none; } }

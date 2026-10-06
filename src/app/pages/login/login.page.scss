@@ -1,81 +1,12 @@
-ion-content {
-  --background: #f5f7fb;
-}
-
-ion-toolbar {
-  --background: #ffffff;
-  --color: #17233b;
-}
-
-ion-title {
-  text-align: center;
-  font-weight: 700;
-  letter-spacing: 4px;
-}
-
-.bienvenida-login {
-  text-align: center;
-  margin: 35px auto 25px;
-}
-
-.logo-dental {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.logo-dental img {
-  width: 80px !important;
-  height: 80px !important;
-  max-width: 80px !important;
-  max-height: 80px !important;
-  object-fit: contain;
-}
-
-.bienvenida-login h1 {
-  font-size: 28px;
-  font-weight: 700;
-  color: #17233b;
-  margin-bottom: 8px;
-}
-
-.bienvenida-login p {
-  color: #6b7280;
-  margin: 0;
-}
-
-ion-card {
-  max-width: 500px;
-  margin: 0 auto;
-  border-radius: 18px;
-  padding: 10px;
-}
-
-ion-card-title {
-  text-align: center;
-  color: #17233b;
-  font-weight: 700;
-}
-
-ion-card-subtitle {
-  text-align: center;
-  margin-top: 8px;
-}
-
-ion-item {
-  margin-top: 12px;
-}
-
-.boton-principal {
-  margin-top: 25px;
-  --border-radius: 10px;
-  height: 48px;
-}
-
-.seguridad {
-  text-align: center;
-  margin-top: 20px;
-  color: #6b7280;
-  font-size: 13px;
-}
+ion-title { text-align: center; font-weight: 750; letter-spacing: 2px; }
+.login-shell { max-width: 440px; margin: 12px auto 24px; }
+.bienvenida-login { text-align: center; margin-bottom: 28px; }
+.logo-dental { margin-bottom: 16px; }
+.logo-dental img { width: 64px; height: 64px; object-fit: contain; }
+.bienvenida-login h1 { font-size: 25px; font-weight: 700; margin: 0 0 10px; letter-spacing: -.5px; }
+.bienvenida-login p { color: var(--cl-muted); margin: 0; line-height: 1.6; font-size: 14px; }
+ion-card { margin: 0; }
+ion-card-content { display: grid; gap: 16px; }
+ion-card-subtitle { margin-top: 6px; }
+.boton-principal { margin-top: 8px; min-height: 48px; }
+@media (min-width: 768px) { .login-shell { margin-top: 36px; } }

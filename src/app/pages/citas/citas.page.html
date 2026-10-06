@@ -2,7 +2,8 @@
   <ion-toolbar>
 
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/home">
+      <ion-menu-button aria-label="Abrir menú"></ion-menu-button>
+      <ion-back-button defaultHref="/home" text="Volver">
       </ion-back-button>
     </ion-buttons>
 
@@ -13,12 +14,13 @@
 
 
 <ion-content class="ion-padding">
+  <div class="page-shell workspace">
 
   <!-- ======================================== -->
   <!-- AGENDAR / EDITAR CITA -->
   <!-- ======================================== -->
 
-  <ion-card>
+  <ion-card class="form-panel">
 
     <ion-card-header>
       <ion-card-title>
@@ -28,9 +30,10 @@
 
 
     <ion-card-content>
+      <div class="field-grid">
 
       <!-- PACIENTE -->
-      <ion-item>
+      <ion-item class="field-wide">
 
         <ion-select
           label="Paciente"
@@ -52,7 +55,7 @@
 
 
       <!-- PROFESIONAL -->
-      <ion-item>
+      <ion-item class="field-wide">
 
         <ion-select
           label="Profesional"
@@ -113,7 +116,7 @@
 
 
       <!-- MOTIVO -->
-      <ion-item>
+      <ion-item class="field-wide">
 
         <ion-input
           label="Motivo"
@@ -127,14 +130,15 @@
 
 
       <!-- GUARDAR CITA -->
+      </div>
       <ion-button
         expand="block"
         (click)="confirmarCita()">
 
         {{
           idEditando !== null
-          ? 'GUARDAR CAMBIOS'
-          : 'CONFIRMAR CITA'
+          ? 'Guardar cambios'
+          : 'Confirmar cita'
         }}
 
       </ion-button>
@@ -148,7 +152,7 @@
         color="medium"
         (click)="cancelarEdicion()">
 
-        CANCELAR EDICIÓN
+        Cancelar edición
 
       </ion-button>
 
@@ -162,7 +166,7 @@
   <!-- REGISTRAR ATENCIÓN -->
   <!-- ======================================== -->
 
-  <ion-card *ngIf="citaAtencion">
+  <ion-card class="attention-panel form-panel" *ngIf="citaAtencion">
 
     <ion-card-header>
 
@@ -189,6 +193,7 @@
 
 
       <!-- DIAGNÓSTICO -->
+      <div class="field-grid">
       <ion-item>
 
         <ion-textarea
@@ -217,7 +222,7 @@
 
 
       <!-- OBSERVACIONES -->
-      <ion-item>
+      <ion-item class="field-wide">
 
         <ion-textarea
           label="Observaciones"
@@ -231,12 +236,13 @@
 
 
       <!-- GUARDAR ATENCIÓN -->
+      </div>
       <ion-button
         expand="block"
         color="success"
         (click)="guardarAtencion()">
 
-        GUARDAR ATENCIÓN
+        Guardar atención
 
       </ion-button>
 
@@ -248,7 +254,7 @@
         color="medium"
         (click)="cancelarAtencion()">
 
-        CANCELAR
+        Cancelar
 
       </ion-button>
 
@@ -262,7 +268,7 @@
   <!-- CITAS REGISTRADAS -->
   <!-- ======================================== -->
 
-  <ion-card *ngIf="citas.length > 0">
+  <ion-card class="records-panel" *ngIf="citas.length > 0">
 
     <ion-card-header>
 
@@ -275,7 +281,7 @@
 
     <ion-card-content>
 
-      <ion-list>
+      <ion-list class="record-list">
 
 
         <ion-item *ngFor="let cita of citas">
@@ -359,7 +365,7 @@
             <!-- ATENCIÓN REGISTRADA -->
             <!-- ======================================== -->
 
-            <div *ngIf="obtenerAtencion(cita.id) as atencion">
+            <div class="clinical-detail" *ngIf="obtenerAtencion(cita.id) as atencion">
 
               <hr>
 
@@ -412,6 +418,7 @@
 
 
             <!-- REGISTRAR ATENCIÓN -->
+            <div class="record-actions">
             <ion-button
               *ngIf="!obtenerAtencion(cita.id)"
               color="success"
@@ -419,7 +426,7 @@
               size="small"
               (click)="abrirAtencion(cita)">
 
-              REGISTRAR ATENCIÓN
+              Registrar atención
 
             </ion-button>
 
@@ -432,7 +439,7 @@
               size="small"
               (click)="editarCita(cita)">
 
-              EDITAR
+              Editar
 
             </ion-button>
 
@@ -444,9 +451,10 @@
               size="small"
               (click)="eliminarCita(cita.id)">
 
-              ELIMINAR
+              Eliminar
 
             </ion-button>
+            </div>
 
 
           </ion-label>
@@ -460,4 +468,5 @@
 
   </ion-card>
 
+  </div>
 </ion-content>

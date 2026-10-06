@@ -5,6 +5,7 @@
 </ion-header>
 
 <ion-content class="ion-padding">
+  <div class="login-shell">
 
   <!-- BIENVENIDA -->
   <div class="bienvenida-login">
@@ -41,11 +42,10 @@
 
       <!-- USUARIO -->
       <ion-item>
-        <ion-label position="floating">
-          Usuario (máx. 8 caracteres)
-        </ion-label>
-
         <ion-input
+          label="Usuario (máx. 8 caracteres)"
+          labelPlacement="stacked"
+          autocomplete="username"
           [(ngModel)]="user_name"
           maxlength="8">
         </ion-input>
@@ -53,11 +53,9 @@
 
       <!-- CONTRASEÑA -->
       <ion-item>
-        <ion-label position="floating">
-          Contraseña (solo números)
-        </ion-label>
-
         <ion-input
+          label="Contraseña (solo números)"
+          labelPlacement="stacked"
           type="number"
           [(ngModel)]="password">
         </ion-input>
@@ -89,9 +87,6 @@
 
   </ion-card>
 
-  <!-- SEGURIDAD -->
-  <div class="seguridad">
-    <p>🔒 Acceso seguro al sistema</p>
   </div>
 
 </ion-content>
