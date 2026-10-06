@@ -28,8 +28,13 @@ Integrantes: Belén Bustos y Matías Ureta.
 
 ```bash
 npm install
-ionic serve
+npm start
 ```
+
+Luego abrir http://localhost:4200
+
+Usuario de prueba: `admin`
+Contraseña: `1234`
 
 ## Metodología
 
