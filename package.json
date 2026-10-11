@@ -58,6 +58,8 @@
     "@angular/compiler-cli": "~20.3.0",
     "@angular/language-service": "~20.3.0",
     "@capacitor/cli": "7.6.9",
+    "@emnapi/core": "^1.11.3",
+    "@emnapi/runtime": "^1.11.3",
     "@ionic/angular-toolkit": "^12.0.0",
     "@types/jasmine": "~5.1.0",
     "@typescript-eslint/eslint-plugin": "^8.18.0",
@@ -79,5 +81,7 @@
     "vercel": "63.1.2"
   },
   "description": "Gestión clínica odontológica CLIDENT",
-  "overrides": { "tar": "7.5.22" }
+  "overrides": {
+    "tar": "7.5.22"
+  }
 }

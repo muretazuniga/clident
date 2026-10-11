@@ -7,12 +7,12 @@ const { createWriteStream } = require('node:fs');
 
 async function main() {
   const root = resolve('.');
-  const source = ['api/[...path].ts', 'api/tsconfig.json', 'package.json', 'vercel.json', 'server/package.json'];
+  const source = ['api/index.mjs', 'server/dist/api.mjs', 'package.json', 'vercel.json', 'server/package.json'];
   const files = Object.fromEntries(source.map(path => [path, new FileFsRef({ fsPath: join(root, path) })]));
   const settings = JSON.parse(readFileSync('vercel.json', 'utf8'));
-  const result = await build({ files, entrypoint: 'api/[...path].ts', workPath: root, repoRootPath: root,
+  const result = await build({ files, entrypoint: 'api/index.mjs', workPath: root, repoRootPath: root,
     config: { zeroConfig: true, projectSettings: { nodeVersion: '24.x', installCommand: '', buildCommand: 'node --version' },
-      excludeFiles: settings.functions['api/**/*.ts'].excludeFiles },
+      excludeFiles: settings.functions['api/**/*.mjs'].excludeFiles },
     meta: { skipDownload: true }, considerBuildCommand: true });
   const lambda = result.output;
   console.log(`Salida del constructor: ${result.output?.type || 'mapa de funciones'}; runtime ${result.output?.runtime || 'no disponible'}; archivos ${Object.keys(result.output?.files || {}).length}.`);
