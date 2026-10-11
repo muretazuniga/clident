@@ -1,107 +1,15 @@
-<ion-header>
-
-  <ion-toolbar>
-
-    <ion-buttons slot="start">
-      <ion-menu-button aria-label="Abrir menú"></ion-menu-button>
-
-      <ion-back-button defaultHref="/home" text="Volver">
-      </ion-back-button>
-
-    </ion-buttons>
-
-    <ion-title>
-      Mis datos
-    </ion-title>
-
-  </ion-toolbar>
-
-</ion-header>
-
-
-<ion-content class="ion-padding">
-  <div class="page-shell profile-shell">
-
-  <ion-card>
-
-    <ion-card-header>
-
-      <ion-card-title>
-        Foto de perfil
-      </ion-card-title>
-
-      <ion-card-subtitle>
-        Selecciona una foto para tu perfil
-      </ion-card-subtitle>
-
-    </ion-card-header>
-
-
-    <ion-card-content>
-
-
-      <!-- SELECTOR DE FOTO -->
-      <input
-        #selectorFoto
-        type="file"
-        accept="image/*"
-        (change)="seleccionarFoto($event)"
-        style="display: none;"
-      >
-
-
-      <!-- BOTÓN GALERÍA -->
-      <ion-button
-        expand="block"
-        (click)="selectorFoto.click()">
-
-        Elegir foto de galería
-
-      </ion-button>
-
-
-      <!-- ELIMINAR FOTO -->
-      <ion-button
-        expand="block"
-        color="danger"
-        fill="outline"
-        (click)="limpiarFoto()"
-        [disabled]="!fotoBase64">
-
-        Eliminar foto
-
-      </ion-button>
-
-
-      <!-- FOTO -->
-      <div
-        *ngIf="fotoBase64"
-        class="profile-photo"
-        @zoomFade>
-
-        <ion-img
-          alt="Foto de perfil"
-          [src]="fotoBase64">
-        </ion-img>
-
-      </div>
-
-
-      <!-- SIN FOTO -->
-      <ion-text
-        color="medium"
-        *ngIf="!fotoBase64">
-
-        <p>
-          No hay foto de perfil seleccionada.
-        </p>
-
-      </ion-text>
-
-
-    </ion-card-content>
-
-  </ion-card>
-
-  </div>
-</ion-content>
+<ion-header><ion-toolbar><ion-buttons slot="start"><ion-menu-button aria-label="Abrir menú"></ion-menu-button><ion-back-button defaultHref="/home" text="Volver"></ion-back-button></ion-buttons><ion-title>Mi perfil</ion-title></ion-toolbar></ion-header>
+<ion-content class="ion-padding"><div class="page-shell profile-shell">
+  <div class="page-heading"><h1>{{ auth.user()?.name }}</h1><p>{{ auth.user()?.email }} · {{ auth.user()?.role === 'ADMINISTRADOR' ? 'Administrador' : 'Profesional' }}</p></div>
+  <ion-card><ion-card-header><ion-card-title>Foto de perfil</ion-card-title><ion-card-subtitle>PNG, JPEG o WebP. Tamaño máximo: 500 KB.</ion-card-subtitle></ion-card-header><ion-card-content>
+    <input #selectorFoto type="file" accept="image/png,image/jpeg,image/webp" (change)="seleccionarFoto($event)" hidden aria-label="Seleccionar foto de perfil">
+    <div *ngIf="fotoBase64" class="profile-photo"><img [src]="fotoBase64" alt="Foto de perfil"></div><p *ngIf="!fotoBase64" class="empty-state">Aún no has seleccionado una foto.</p>
+    <div class="record-actions"><ion-button (click)="selectorFoto.click()" [disabled]="!!ui.pending()">Elegir foto</ion-button><ion-button color="danger" fill="outline" (click)="limpiarFoto()" [disabled]="!fotoBase64 || !!ui.pending()">Eliminar foto</ion-button><ion-button fill="outline" [disabled]="!!ui.pending()" (click)="recoverPhoto()">Recuperar foto local</ion-button></div>
+  </ion-card-content></ion-card>
+  <ion-card><ion-card-header><ion-card-title>Cambiar contraseña</ion-card-title></ion-card-header><ion-card-content><form class="form-stack" (ngSubmit)="changePassword()">
+    <ion-input label="Contraseña actual" labelPlacement="stacked" fill="outline" type="password" autocomplete="current-password" name="current" [(ngModel)]="currentPassword" required></ion-input>
+    <ion-input label="Nueva contraseña" labelPlacement="stacked" fill="outline" type="password" autocomplete="new-password" name="new" [(ngModel)]="newPassword" minlength="12" maxlength="128" required></ion-input>
+    <ion-input label="Confirmar nueva contraseña" labelPlacement="stacked" fill="outline" type="password" autocomplete="new-password" name="confirmation" [(ngModel)]="confirmation" required></ion-input>
+    <ion-button type="submit" [disabled]="!!ui.pending()">Actualizar contraseña</ion-button>
+  </form></ion-card-content></ion-card>
+</div></ion-content>

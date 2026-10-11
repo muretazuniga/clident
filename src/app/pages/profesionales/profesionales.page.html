@@ -1,127 +1,19 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-menu-button aria-label="Abrir menú"></ion-menu-button>
-      <ion-back-button defaultHref="/home" text="Volver"></ion-back-button>
-    </ion-buttons>
-
-    <ion-title>Profesionales</ion-title>
-  </ion-toolbar>
-</ion-header>
-
+<ion-header><ion-toolbar><ion-buttons slot="start"><ion-menu-button aria-label="Abrir menú"></ion-menu-button><ion-back-button defaultHref="/home" text="Volver"></ion-back-button></ion-buttons><ion-title>Profesionales</ion-title></ion-toolbar></ion-header>
 <ion-content class="ion-padding">
-  <div class="page-shell workspace">
-  <ion-card class="form-panel">
-    <ion-card-header>
-      <ion-card-title>{{ idEditando !== null ? 'Editar profesional' : 'Agregar profesional' }}</ion-card-title>
-    </ion-card-header>
-
-    <ion-card-content>
-      <div class="field-grid">
-
-      <ion-item>
-        <ion-input
-          label="Nombre"
-          labelPlacement="stacked"
-          [(ngModel)]="nombre"
-          placeholder="Ej: Camila">
-        </ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-input
-          label="Apellido"
-          labelPlacement="stacked"
-          [(ngModel)]="apellido"
-          placeholder="Ej: Rojas">
-        </ion-input>
-      </ion-item>
-
-      <ion-item class="field-wide">
-        <ion-select
-          label="Especialidad"
-          labelPlacement="stacked"
-          [(ngModel)]="especialidad"
-          placeholder="Seleccionar especialidad">
-
-          <ion-select-option value="Odontología General">
-            Odontología General
-          </ion-select-option>
-
-          <ion-select-option value="Ortodoncia">
-            Ortodoncia
-          </ion-select-option>
-
-          <ion-select-option value="Endodoncia">
-            Endodoncia
-          </ion-select-option>
-
-          <ion-select-option value="Periodoncia">
-            Periodoncia
-          </ion-select-option>
-
-          <ion-select-option value="Odontopediatría">
-            Odontopediatría
-          </ion-select-option>
-
-        </ion-select>
-      </ion-item>
-
-      </div>
-      <ion-button
-  expand="block"
-  (click)="agregarProfesional()">
-
-  {{ idEditando !== null ? 'Guardar cambios' : 'Agregar profesional' }}
-
-</ion-button>
-
-    </ion-card-content>
-  </ion-card>
-
-
-  <ion-card class="records-panel">
-    <ion-card-header>
-      <ion-card-title>Profesionales registrados</ion-card-title>
-    </ion-card-header>
-
-    <ion-card-content>
-
-      <p class="empty-state" *ngIf="profesionales.length === 0">No hay profesionales registrados.</p>
-      <ion-list class="record-list">
-
-        <ion-item *ngFor="let profesional of profesionales">
-
-          <ion-label>
-            <h2>
-              {{ profesional.nombre }} {{ profesional.apellido }}
-            </h2>
-
-            <p>{{ profesional.especialidad }}</p>
-          <div class="record-actions">
-
-          <ion-button
-  color="primary"
-  fill="outline"
-  (click)="editarProfesional(profesional)">
-  Editar
-</ion-button>
-
-<ion-button
-  color="danger"
-  fill="outline"
-  (click)="eliminarProfesional(profesional.id)">
-  Eliminar
-</ion-button>
-          </div>
-          </ion-label>
-
-        </ion-item>
-
-      </ion-list>
-
-    </ion-card-content>
-  </ion-card>
-
-  </div>
-</ion-content>
+<div class="page-shell"><div class="page-heading"><h1>Equipo clínico</h1><p>Profesionales y especialidades de la clínica.</p></div><p *ngIf="ui.pending()" role="status">Cargando información...</p><div *ngIf="ui.error()" class="load-error"><p role="alert">{{ ui.message() }}</p><ion-button fill="outline" [disabled]="!!ui.pending()" (click)="ionViewWillEnter()">Volver a cargar</ion-button></div></div>
+<div class="page-shell workspace" [class.read-only]="auth.user()?.role !== 'ADMINISTRADOR'">
+<ion-card class="form-panel" *ngIf="auth.user()?.role === 'ADMINISTRADOR'"><ion-card-header><ion-card-title>{{ idEditando !== null ? 'Editar profesional' : 'Agregar profesional' }}</ion-card-title></ion-card-header><ion-card-content>
+<form class="form-stack" (ngSubmit)="agregarProfesional()"><div class="field-grid">
+<ion-item><ion-input label="Nombre" labelPlacement="stacked" name="nombre" [(ngModel)]="nombre" required maxlength="100"></ion-input></ion-item>
+<ion-item><ion-input label="Apellido" labelPlacement="stacked" name="apellido" [(ngModel)]="apellido" required maxlength="100"></ion-input></ion-item>
+<ion-item class="field-wide"><ion-select label="Especialidad" labelPlacement="stacked" name="especialidad" [(ngModel)]="especialidad" placeholder="Seleccionar especialidad">
+<ion-select-option value="Odontología General">Odontología General</ion-select-option><ion-select-option value="Ortodoncia">Ortodoncia</ion-select-option><ion-select-option value="Endodoncia">Endodoncia</ion-select-option><ion-select-option value="Periodoncia">Periodoncia</ion-select-option><ion-select-option value="Odontopediatría">Odontopediatría</ion-select-option></ion-select></ion-item>
+<ion-item class="field-wide"><ion-select label="Cuenta de usuario" labelPlacement="stacked" name="user" [(ngModel)]="userId" placeholder="Sin cuenta vinculada"><ion-select-option [value]="null">Sin cuenta</ion-select-option><ion-select-option *ngFor="let u of users" [value]="u.id">{{ u.name }} · {{ u.email }}</ion-select-option></ion-select></ion-item></div>
+<p class="muted">Vincula una cuenta profesional para habilitar su acceso a la agenda.</p>
+<ion-button type="submit" expand="block" [disabled]="!!ui.pending()">{{ idEditando !== null ? 'Guardar cambios' : 'Agregar profesional' }}</ion-button><ion-button *ngIf="idEditando !== null" fill="outline" [disabled]="!!ui.pending()" (click)="cancelarEdicion()">Cancelar edición</ion-button>
+</form></ion-card-content></ion-card>
+<ion-card class="records-panel"><ion-card-header><ion-card-title>Profesionales registrados</ion-card-title></ion-card-header><ion-card-content>
+<p class="empty-state" *ngIf="loaded && !profesionales.length">No hay profesionales disponibles.</p>
+<ion-list class="record-list"><ion-item *ngFor="let p of profesionales"><ion-label><h2>{{ p.nombre }} {{ p.apellido }}</h2><p>{{ p.especialidad }}</p><p>{{ p.userId ? 'Cuenta vinculada' : 'Sin cuenta vinculada' }}</p><div class="record-actions" *ngIf="auth.user()?.role === 'ADMINISTRADOR'"><ion-button fill="outline" [disabled]="!!ui.pending()" (click)="editarProfesional(p)">Editar</ion-button><ion-button color="danger" fill="outline" [disabled]="!!ui.pending()" (click)="eliminarProfesional(p.id)">Eliminar</ion-button></div></ion-label></ion-item></ion-list>
+</ion-card-content></ion-card>
+</div></ion-content>

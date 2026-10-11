@@ -18,16 +18,10 @@
 
 </ion-header>
 
-
 <ion-content class="ion-padding">
-  <div class="page-shell workspace">
+  <div class="page-shell"><p *ngIf="ui.pending()" role="status">Cargando información...</p><div *ngIf="ui.error()" class="load-error"><p role="alert">{{ ui.message() }}</p><ion-button fill="outline" [disabled]="!!ui.pending()" (click)="ionViewWillEnter()">Volver a cargar</ion-button></div></div><div class="page-shell workspace" [class.read-only]="auth.user()?.role !== 'ADMINISTRADOR' && idEditando === null">
 
-
-  <!-- ======================================== -->
-  <!-- FORMULARIO PACIENTE -->
-  <!-- ======================================== -->
-
-  <ion-card class="form-panel">
+  <ion-card class="form-panel" *ngIf="auth.user()?.role === 'ADMINISTRADOR' || idEditando !== null">
 
     <ion-card-header>
 
@@ -43,12 +37,8 @@
 
     </ion-card-header>
 
-
     <ion-card-content>
       <div class="field-grid">
-
-
-      <!-- NOMBRE -->
 
       <ion-item class="field-wide">
 
@@ -62,9 +52,6 @@
 
       </ion-item>
 
-
-      <!-- RUT -->
-
       <ion-item>
 
         <ion-input
@@ -77,9 +64,6 @@
 
       </ion-item>
 
-
-      <!-- FECHA NACIMIENTO -->
-
       <ion-item>
 
         <ion-input
@@ -91,9 +75,6 @@
         </ion-input>
 
       </ion-item>
-
-
-      <!-- TELÉFONO -->
 
       <ion-item>
 
@@ -108,9 +89,6 @@
 
       </ion-item>
 
-
-      <!-- CORREO -->
-
       <ion-item class="field-wide">
 
         <ion-input
@@ -124,11 +102,9 @@
 
       </ion-item>
 
-
-      <!-- GUARDAR -->
       </div>
 
-      <ion-button
+      <ion-button [disabled]="!!ui.pending()"
         expand="block"
         (click)="guardarPaciente()">
 
@@ -140,10 +116,7 @@
 
       </ion-button>
 
-
-      <!-- CANCELAR -->
-
-      <ion-button
+      <ion-button [disabled]="!!ui.pending()"
         *ngIf="idEditando !== null"
         expand="block"
         fill="outline"
@@ -154,16 +127,9 @@
 
       </ion-button>
 
-
     </ion-card-content>
 
   </ion-card>
-
-
-
-  <!-- ======================================== -->
-  <!-- HISTORIAL DEL PACIENTE -->
-  <!-- ======================================== -->
 
   <ion-card class="history-panel" *ngIf="pacienteHistorial">
 
@@ -181,11 +147,7 @@
 
     </ion-card-header>
 
-
     <ion-card-content>
-
-
-      <!-- SI TIENE ATENCIONES -->
 
       <ion-list
         class="record-list history-list"
@@ -194,12 +156,10 @@
           else sinAtenciones
         ">
 
-
         <ion-item
           *ngFor="let atencion of atencionesPaciente">
 
           <ion-label>
-
 
             <h2>
 
@@ -208,7 +168,6 @@
               </strong>
 
             </h2>
-
 
             <p>
 
@@ -220,7 +179,6 @@
 
             </p>
 
-
             <p>
 
               <strong>
@@ -230,7 +188,6 @@
               {{ atencion.diagnostico }}
 
             </p>
-
 
             <p>
 
@@ -242,7 +199,6 @@
 
             </p>
 
-
             <p *ngIf="atencion.observaciones">
 
               <strong>
@@ -253,16 +209,11 @@
 
             </p>
 
-
           </ion-label>
 
         </ion-item>
 
       </ion-list>
-
-
-
-      <!-- SIN ATENCIONES -->
 
       <ng-template #sinAtenciones>
 
@@ -276,11 +227,7 @@
 
       </ng-template>
 
-
-
-      <!-- CERRAR -->
-
-      <ion-button
+      <ion-button [disabled]="!!ui.pending()"
         expand="block"
         fill="outline"
         color="medium"
@@ -290,16 +237,9 @@
 
       </ion-button>
 
-
     </ion-card-content>
 
   </ion-card>
-
-
-
-  <!-- ======================================== -->
-  <!-- PACIENTES REGISTRADOS -->
-  <!-- ======================================== -->
 
   <ion-card
     class="records-panel"
@@ -316,17 +256,14 @@
 
     </ion-card-header>
 
-
     <ion-card-content>
 
       <ion-list class="record-list">
-
 
         <ion-item
           *ngFor="let p of pacientes">
 
           <ion-label>
-
 
             <h2>
 
@@ -335,7 +272,6 @@
               </strong>
 
             </h2>
-
 
             <p>
 
@@ -346,7 +282,6 @@
               {{ p.rut }}
 
             </p>
-
 
             <p>
 
@@ -361,7 +296,6 @@
 
             </p>
 
-
             <p>
 
               <strong>
@@ -371,7 +305,6 @@
               {{ p.phone }}
 
             </p>
-
 
             <p>
 
@@ -383,12 +316,9 @@
 
             </p>
 
-
-
-            <!-- VER HISTORIAL -->
             <div class="record-actions">
 
-            <ion-button
+            <ion-button [disabled]="!!ui.pending()"
               color="success"
               fill="outline"
               size="small"
@@ -398,11 +328,7 @@
 
             </ion-button>
 
-
-
-            <!-- EDITAR -->
-
-            <ion-button
+            <ion-button [disabled]="!!ui.pending()"
               color="primary"
               fill="outline"
               size="small"
@@ -412,38 +338,26 @@
 
             </ion-button>
 
-
-
-            <!-- ELIMINAR -->
-
-            <ion-button
+            <ion-button [disabled]="!!ui.pending()"
               color="danger"
               fill="outline"
               size="small"
-              (click)="eliminarPaciente(p.id)">
+              *ngIf="auth.user()?.role === 'ADMINISTRADOR'" (click)="eliminarPaciente(p.id)">
 
               Eliminar
 
             </ion-button>
             </div>
 
-
           </ion-label>
 
         </ion-item>
-
 
       </ion-list>
 
     </ion-card-content>
 
   </ion-card>
-
-
-
-  <!-- ======================================== -->
-  <!-- SIN PACIENTES -->
-  <!-- ======================================== -->
 
   <ng-template #sinDatos>
 
@@ -454,7 +368,7 @@
         <ion-text color="medium">
 
           <p>
-            No hay pacientes registrados.
+            {{ loaded ? 'No hay pacientes disponibles.' : 'Los registros se mostrarán cuando termine la carga.' }}
           </p>
 
         </ion-text>
@@ -464,7 +378,6 @@
     </ion-card>
 
   </ng-template>
-
 
   </div>
 </ion-content>

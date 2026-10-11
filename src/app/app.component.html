@@ -17,6 +17,7 @@
           </ion-item>
         </ion-menu-toggle>
       </ion-list>
+      <ion-menu-toggle auto-hide="false" *ngIf="auth.user()?.role === 'ADMINISTRADOR'"><ion-item routerLink="/administracion" routerLinkActive="selected" detail="false"><ion-icon slot="start" name="shield-checkmark" aria-hidden="true"></ion-icon><ion-label>Administración</ion-label></ion-item></ion-menu-toggle>
       </nav>
     </ion-content>
   </ion-menu>
@@ -25,4 +26,6 @@
     <ion-router-outlet></ion-router-outlet>
   </div>
   </ion-split-pane>
+  <div *ngIf="ui.pending()" class="operation-progress" role="status"><ion-spinner name="dots"></ion-spinner><span>Procesando solicitud</span></div>
+  <div *ngIf="ui.message()" class="operation-message" [class.operation-error]="ui.error()" role="status"><span>{{ ui.message() }}</span><button type="button" aria-label="Cerrar mensaje" (click)="ui.message.set('')">Cerrar</button></div>
 </ion-app>

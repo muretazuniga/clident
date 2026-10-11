@@ -1,0 +1,17 @@
+.git
+.vercel
+.env
+.env.*
+.aws
+.agents
+.codex
+artifacts
+coverage
+.angular
+server/tests
+server/browser-fixture.ts
+server/verify-initialization.ts
+server/check-readiness.ts
+server/prepare-local-env.ts
+server/dist
+*.backup.json

@@ -1,11 +1,29 @@
 {
-  "name": "clident" ,
+  "name": "clident",
   "version": "0.0.1",
   "private": true,
+  "engines": {
+    "node": "24.x"
+  },
   "scripts": {
-    "start": "ng serve",
+    "start": "ng serve --proxy-config proxy.conf.json",
     "build": "ng build",
-    "test": "node ./set-chrome-bin.js && ng test --browsers=ChromeHeadless --watch=false"
+    "lint": "ng lint",
+    "test": "node ./scripts/test-angular.cjs",
+    "dev:api": "npm --prefix server run dev",
+    "typecheck:server": "npm --prefix server run typecheck",
+    "test:server": "npm --prefix server test",
+    "build:all": "npm run typecheck:server && npm --prefix server run build && npm run build",
+    "db:generate": "npm --prefix server run db:generate",
+    "db:check": "npm --prefix server run db:check",
+    "check:readiness": "npm --prefix server run check:readiness --",
+    "db:migrate": "npm --prefix server run db:migrate --",
+    "bootstrap:admin": "npm --prefix server run bootstrap",
+    "test:browser": "node scripts/browser-tests.cjs",
+    "check:vercel": "node scripts/vercel-status.cjs",
+    "package:vercel": "node scripts/package-vercel.cjs",
+    "test:vercel": "node scripts/smoke-vercel.cjs",
+    "check:assets": "node scripts/check-public-assets.cjs"
   },
   "dependencies": {
     "@angular/animations": "~20.3.0",
@@ -39,7 +57,7 @@
     "@angular/cli": "~20.3.0",
     "@angular/compiler-cli": "~20.3.0",
     "@angular/language-service": "~20.3.0",
-    "@capacitor/cli": "7.4.4",
+    "@capacitor/cli": "7.6.9",
     "@ionic/angular-toolkit": "^12.0.0",
     "@types/jasmine": "~5.1.0",
     "@typescript-eslint/eslint-plugin": "^8.18.0",
@@ -57,7 +75,9 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "puppeteer": "^23.0.0",
-    "typescript": "~5.8.0"
+    "typescript": "~5.8.0",
+    "vercel": "63.1.2"
   },
-  "description": "An Ionic project"
+  "description": "Gestión clínica odontológica CLIDENT",
+  "overrides": { "tar": "7.5.22" }
 }

@@ -1,140 +1,33 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-
-import { DBTaskService } from '../../services/dbtask.service';
-
-interface Profesional {
-  id: number;
-  nombre: string;
-  apellido: string;
-  especialidad: string;
-}
-
-@Component({
-  selector: 'app-profesionales',
-  templateUrl: './profesionales.page.html',
-  styleUrls: ['./profesionales.page.scss'],
-  standalone: true,
-  imports: [
-    IonicModule,
-    CommonModule,
-    FormsModule
-  ]
-})
-export class ProfesionalesPage implements OnInit {
-
-  nombre = '';
-  apellido = '';
-  especialidad = '';
-
-  idEditando: number | null = null;
-
-  profesionales: Profesional[] = [];
-
-  constructor(private db: DBTaskService) {}
-
-  async ngOnInit(): Promise<void> {
-    await this.cargarProfesionales();
+import { ApiService, AuthService } from '../../services/api.service';
+import { UiService } from '../../services/ui.service';
+import type { Profesional, Usuario } from '../../../../shared/models';
+@Component({ selector: 'app-profesionales', templateUrl: './profesionales.page.html', styleUrls: ['./profesionales.page.scss'], standalone: true, imports: [IonicModule, CommonModule, FormsModule] })
+export class ProfesionalesPage {
+  nombre = ''; apellido = ''; especialidad = ''; userId: string | null = null; idEditando: number | null = null;
+  profesionales: Profesional[] = []; users: Usuario[] = []; loaded = false;
+  constructor(private api: ApiService, public auth: AuthService, public ui: UiService) {}
+  async ionViewWillEnter() { await this.ui.run(async () => { await this.reload(); this.loaded = true; }); }
+  private async reload() {
+    this.profesionales = await this.api.list<Profesional>('profesionales');
+    if (this.auth.user()?.role === 'ADMINISTRADOR') this.users = (await this.api.request<Usuario[]>('users')).filter(u => u.active && u.role === 'PROFESIONAL');
   }
-
-  private async cargarProfesionales(): Promise<void> {
-
-    const guardados = await this.db.obtenerProfesionales();
-
-    if (guardados && guardados.length > 0) {
-      this.profesionales = guardados;
-      return;
-    }
-
-    this.profesionales = [
-      {
-        id: 1,
-        nombre: 'Camila',
-        apellido: 'Rojas',
-        especialidad: 'Odontología General'
-      },
-      {
-        id: 2,
-        nombre: 'Sebastián',
-        apellido: 'Muñoz',
-        especialidad: 'Ortodoncia'
-      },
-      {
-        id: 3,
-        nombre: 'Valentina',
-        apellido: 'Torres',
-        especialidad: 'Endodoncia'
-      }
-    ];
-
-    await this.db.guardarProfesionales(this.profesionales);
+  async agregarProfesional() {
+    await this.ui.run(async () => {
+      const data = { nombre: this.nombre, apellido: this.apellido, especialidad: this.especialidad, userId: this.userId };
+      const current = this.profesionales.find(p => p.id === this.idEditando);
+      if (current) await this.api.update('profesionales', current.id, data, current.updatedAt); else await this.api.create('profesionales', data);
+      this.cancelarEdicion(); await this.reload();
+    }, 'Profesional guardado.');
   }
-
-  async agregarProfesional(): Promise<void> {
-
-    if (
-      !this.nombre.trim() ||
-      !this.apellido.trim() ||
-      !this.especialidad
-    ) {
-      return;
-    }
-
-    if (this.idEditando !== null) {
-
-      const profesional = this.profesionales.find(
-        p => p.id === this.idEditando
-      );
-
-      if (profesional) {
-        profesional.nombre = this.nombre.trim();
-        profesional.apellido = this.apellido.trim();
-        profesional.especialidad = this.especialidad;
-      }
-
-      this.idEditando = null;
-
-    } else {
-
-      const nuevoProfesional: Profesional = {
-        id: Date.now(),
-        nombre: this.nombre.trim(),
-        apellido: this.apellido.trim(),
-        especialidad: this.especialidad
-      };
-
-      this.profesionales.push(nuevoProfesional);
-    }
-
-    await this.db.guardarProfesionales(this.profesionales);
-
-    this.nombre = '';
-    this.apellido = '';
-    this.especialidad = '';
-  }
-
-  editarProfesional(profesional: Profesional): void {
-
-    this.idEditando = profesional.id;
-
-    this.nombre = profesional.nombre;
-    this.apellido = profesional.apellido;
-    this.especialidad = profesional.especialidad;
-
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
-  }
-
-  async eliminarProfesional(id: number): Promise<void> {
-
-    this.profesionales = this.profesionales.filter(
-      profesional => profesional.id !== id
-    );
-
-    await this.db.guardarProfesionales(this.profesionales);
+  editarProfesional(p: Profesional) { this.idEditando = p.id; this.nombre = p.nombre; this.apellido = p.apellido; this.especialidad = p.especialidad; this.userId = p.userId; }
+  cancelarEdicion() { this.idEditando = null; this.nombre = ''; this.apellido = ''; this.especialidad = ''; this.userId = null; }
+  async eliminarProfesional(id: number) {
+    const p = this.profesionales.find(p => p.id === id);
+    if (!p || !await this.ui.confirm('¿Eliminar este profesional? No se permite eliminar profesionales con citas registradas.')) return;
+    await this.ui.run(async () => { await this.api.delete('profesionales', id, p.updatedAt); this.cancelarEdicion(); await this.reload(); }, 'Profesional eliminado.');
   }
 }

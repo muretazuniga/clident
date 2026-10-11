@@ -1,92 +1,18 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>CLIDENT</ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content class="ion-padding">
-  <div class="login-shell">
-
-  <!-- BIENVENIDA -->
-  <div class="bienvenida-login">
-
-    <div class="logo-dental">
-      <img
-        src="assets/img/logo-clident.png"
-        alt="Logo CLIDENT">
-    </div>
-
-    <h1>Bienvenido a CLIDENT</h1>
-    <p>Sistema de gestión para clínica dental</p>
-
-  </div>
-
-  <!-- LOGIN / REGISTRO -->
-  <ion-card>
-
-    <ion-card-header>
-
-      <ion-card-title>
-        {{ esRegistro ? 'Crear cuenta' : 'Iniciar sesión' }}
-      </ion-card-title>
-
-      <ion-card-subtitle>
-        {{ esRegistro
-          ? 'Registra tus datos para acceder al sistema'
-          : 'Ingresa tus datos para continuar' }}
-      </ion-card-subtitle>
-
-    </ion-card-header>
-
-    <ion-card-content>
-
-      <!-- USUARIO -->
-      <ion-item>
-        <ion-input
-          label="Usuario (máx. 8 caracteres)"
-          labelPlacement="stacked"
-          autocomplete="username"
-          [(ngModel)]="user_name"
-          maxlength="8">
-        </ion-input>
-      </ion-item>
-
-      <!-- CONTRASEÑA -->
-      <ion-item>
-        <ion-input
-          label="Contraseña (solo números)"
-          labelPlacement="stacked"
-          type="number"
-          [(ngModel)]="password">
-        </ion-input>
-      </ion-item>
-
-      <!-- BOTÓN PRINCIPAL -->
-      <ion-button
-        expand="block"
-        class="boton-principal"
-        (click)="onSubmit()">
-
-        {{ esRegistro ? 'Registrar y entrar' : 'Iniciar sesión' }}
-
-      </ion-button>
-
-      <!-- CAMBIAR LOGIN / REGISTRO -->
-      <ion-button
-        fill="clear"
-        expand="block"
-        (click)="cambiarModo()">
-
-        {{ esRegistro
-          ? '¿Ya tienes cuenta? Inicia sesión'
-          : '¿No tienes cuenta? Regístrate' }}
-
-      </ion-button>
-
-    </ion-card-content>
-
-  </ion-card>
-
-  </div>
-
+<ion-content>
+  <main class="login-layout">
+    <div class="login-identity"><div class="brand-mark" aria-hidden="true">C</div><h1>CLIDENT</h1><p>Gestión clínica odontológica</p></div>
+    <section class="login-panel" aria-labelledby="login-title">
+      <h2 id="login-title">{{ mode === 'login' ? 'Iniciar sesión' : mode === 'recover' ? 'Recuperar acceso' : 'Nueva contraseña' }}</h2>
+      <p>{{ mode === 'login' ? 'Ingresa con tu cuenta de la clínica.' : 'La contraseña debe contener al menos 12 caracteres.' }}</p>
+      <form (ngSubmit)="onSubmit()">
+        <ion-input *ngIf="mode !== 'reset'" label="Correo electrónico" labelPlacement="stacked" fill="outline" type="email" autocomplete="username" name="email" [(ngModel)]="email" required></ion-input>
+        <ion-input *ngIf="mode !== 'recover'" label="Contraseña" labelPlacement="stacked" fill="outline" type="password" [autocomplete]="mode === 'reset' ? 'new-password' : 'current-password'" name="password" [(ngModel)]="password" required></ion-input>
+        <ion-input *ngIf="mode === 'reset'" label="Confirmar contraseña" labelPlacement="stacked" fill="outline" type="password" autocomplete="new-password" name="confirmation" [(ngModel)]="confirmation" required></ion-input>
+        <p *ngIf="message" role="status" [class.form-error]="error">{{ message }}</p>
+        <ion-button type="submit" expand="block" [disabled]="busy"><ion-spinner *ngIf="busy" name="dots"></ion-spinner>{{ busy ? 'Procesando' : mode === 'login' ? 'Ingresar' : 'Continuar' }}</ion-button>
+        <ion-button *ngIf="mode !== 'reset'" fill="clear" expand="block" [disabled]="busy" (click)="mode = mode === 'login' ? 'recover' : 'login'; message = ''; password = ''">{{ mode === 'login' ? 'Olvidé mi contraseña' : 'Volver al inicio de sesión' }}</ion-button>
+      </form>
+      <p class="access-note">Las cuentas son creadas por la administración de la clínica.</p>
+    </section>
+  </main>
 </ion-content>

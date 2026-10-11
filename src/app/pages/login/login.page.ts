@@ -1,105 +1,23 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { AlertController, IonicModule } from '@ionic/angular';
-
-import { DBTaskService } from '../../services/dbtask.service';
-
-@Component({
-  selector: 'app-login',
-  standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule],
-  templateUrl: './login.page.html',
-  styleUrls: ['./login.page.scss'],
-})
+import { ActivatedRoute, Router } from '@angular/router';
+import { IonicModule } from '@ionic/angular';
+import { ApiService, AuthService } from '../../services/api.service';
+@Component({ selector: 'app-login', standalone: true, imports: [IonicModule, CommonModule, FormsModule], templateUrl: './login.page.html', styleUrls: ['./login.page.scss'] })
 export class LoginPage {
-
-  esRegistro: boolean = false;
-  user_name: string = '';
-  password: string = '';
-
-  constructor(
-    private db: DBTaskService,
-    private router: Router,
-    private alertController: AlertController
-  ) {}
-
-  async onSubmit(): Promise<void> {
-
-    const user = String(this.user_name ?? '').trim();
-    const pass = String(this.password ?? '').trim();
-
-    // Validar usuario
-    if (!user || user.length > 8) {
-      await this.showAlert(
-        'Validación',
-        'El usuario es obligatorio y debe tener máximo 8 caracteres.'
-      );
-      return;
-    }
-
-    // Validar contraseña
-    if (!pass || !/^\d+$/.test(pass)) {
-      await this.showAlert(
-        'Validación',
-        'La contraseña debe contener solo números.'
-      );
-      return;
-    }
-
+  email = ''; password = ''; confirmation = ''; busy = false; message = ''; error = false;
+  mode: 'login' | 'recover' | 'reset' = 'login';
+  private token: string | null;
+  constructor(private auth: AuthService, private api: ApiService, private router: Router, route: ActivatedRoute) { this.token = route.snapshot.queryParamMap.get('token'); if (this.token) this.mode = 'reset'; if (route.snapshot.queryParamMap.has('expired')) this.message = 'Tu sesión expiró. Inicia sesión nuevamente.'; }
+  async onSubmit() {
+    if (this.busy) return;
+    this.busy = true; this.message = ''; this.error = false;
     try {
-
-      // =========================
-      // REGISTRO
-      // =========================
-      if (this.esRegistro) {
-        await this.db.guardarSesion(user);
-        await this.router.navigateByUrl('/home');
-        return;
-      }
-
-      // =========================
-      // LOGIN
-      // =========================
-      if (user !== 'admin' || pass !== '1234') {
-        await this.showAlert(
-          'Error',
-          'Usuario o contraseña incorrectos.'
-        );
-        return;
-      }
-
-      await this.db.guardarSesion(user);
-      await this.router.navigateByUrl('/home');
-
-    } catch (error) {
-      console.error('Error en login:', error);
-
-      await this.showAlert(
-        'Error',
-        'Ocurrió un problema al iniciar sesión.'
-      );
-    }
-  }
-
-  cambiarModo(): void {
-    this.esRegistro = !this.esRegistro;
-    this.user_name = '';
-    this.password = '';
-  }
-
-  private async showAlert(
-    header: string,
-    message: string
-  ): Promise<void> {
-
-    const alert = await this.alertController.create({
-      header,
-      message,
-      buttons: ['OK'],
-    });
-
-    await alert.present();
+      if (this.mode === 'login') { await this.auth.login(this.email.trim(), this.password); this.password = ''; await this.router.navigateByUrl('/home'); }
+      else if (this.mode === 'recover') { await this.api.request('auth/request-password-reset', 'POST', { email: this.email.trim(), redirectTo: `${location.origin}/login` }); this.message = 'Si la cuenta existe, recibirás un enlace para restablecer la contraseña.'; }
+      else { if (this.password.length < 12 || this.password !== this.confirmation) throw new Error('Usa al menos 12 caracteres y confirma la misma contraseña.'); await this.api.request('auth/reset-password', 'POST', { token: this.token, newPassword: this.password }); this.mode = 'login'; this.password = ''; this.confirmation = ''; this.message = 'Contraseña actualizada. Inicia sesión.'; await this.router.navigateByUrl('/login', { replaceUrl: true }); }
+    } catch (e) { this.error = true; this.message = this.mode === 'login' ? 'No se pudo iniciar sesión. Comprueba tus credenciales y conexión. Si realizaste varios intentos, espera unos minutos.' : e instanceof Error ? e.message : 'No se pudo completar la solicitud.'; }
+    finally { this.busy = false; }
   }
 }

@@ -1,0 +1,28 @@
+<ion-header><ion-toolbar><ion-buttons slot="start"><ion-menu-button aria-label="Abrir menú"></ion-menu-button></ion-buttons><ion-title>Administración</ion-title></ion-toolbar></ion-header>
+<ion-content class="ion-padding">
+  <div class="page-shell">
+    <div class="page-heading"><h1>Usuarios y acceso</h1><p>Administra las cuentas y consulta los permisos de cada rol.</p></div>
+    <div class="workspace">
+      <p *ngIf="ui.pending()" role="status">Cargando información...</p><div *ngIf="ui.error()" class="load-error"><p role="alert">{{ ui.message() }}</p><ion-button fill="outline" [disabled]="!!ui.pending()" (click)="ionViewWillEnter()">Volver a cargar</ion-button></div>
+      <ion-card class="form-panel"><ion-card-header><ion-card-title>{{ editing ? 'Editar cuenta' : 'Crear cuenta' }}</ion-card-title></ion-card-header><ion-card-content>
+        <form class="form-stack" (ngSubmit)="save()">
+          <ion-input label="Nombre completo" labelPlacement="stacked" fill="outline" name="name" [(ngModel)]="name" required maxlength="200"></ion-input>
+          <ion-input label="Correo electrónico" labelPlacement="stacked" fill="outline" type="email" name="email" [(ngModel)]="email" [disabled]="!!editing" required></ion-input>
+          <ion-input *ngIf="!editing" label="Contraseña inicial" labelPlacement="stacked" fill="outline" type="password" autocomplete="new-password" name="password" [(ngModel)]="password" minlength="12" maxlength="128" required></ion-input>
+          <p *ngIf="!editing" class="muted">Al menos 12 caracteres. Entrega la contraseña por un canal seguro.</p>
+          <ion-select label="Rol" labelPlacement="stacked" fill="outline" name="role" [(ngModel)]="role"><ion-select-option value="PROFESIONAL">Profesional</ion-select-option><ion-select-option value="ADMINISTRADOR">Administrador</ion-select-option></ion-select>
+          <ion-toggle *ngIf="editing" name="active" [(ngModel)]="active">Cuenta activa</ion-toggle>
+          <ion-button type="submit" expand="block" [disabled]="!!ui.pending() || !name.trim() || (!editing && (!email || password.length < 12))">Guardar cuenta</ion-button>
+          <ion-button *ngIf="editing" fill="outline" (click)="cancel()">Cancelar edición</ion-button>
+        </form>
+      </ion-card-content></ion-card>
+      <ion-card class="records-panel"><ion-card-header><ion-card-title>Cuentas registradas</ion-card-title></ion-card-header><ion-card-content>
+        <p *ngIf="loaded && !users.length" class="empty-state">No hay cuentas registradas.</p>
+        <ion-list class="record-list"><ion-item *ngFor="let u of users"><ion-label><h2>{{ u.name }}</h2><p>{{ u.email }}</p><p>{{ u.role === 'ADMINISTRADOR' ? 'Administrador' : 'Profesional' }} · {{ u.active ? 'Activa' : 'Desactivada' }}</p><p>Correo {{ u.emailVerified ? 'verificado' : 'sin verificar' }}</p><div class="record-actions"><ion-button fill="outline" (click)="edit(u)">Editar cuenta</ion-button></div></ion-label></ion-item></ion-list>
+      </ion-card-content></ion-card>
+    </div>
+    <section class="policy-section"><h2>Permisos de los roles</h2><p>El administrador gestiona cuentas, profesionales y todos los registros. El profesional consulta y actualiza pacientes asignados, y administra exclusivamente su agenda y sus atenciones. La asignación inicial se realiza mediante una cita creada por administración.</p><div class="permission-grid"><div *ngFor="let row of matrix | keyvalue"><h3>{{ row.key === 'ADMINISTRADOR' ? 'Administrador' : 'Profesional' }}</h3><ul><li *ngFor="let permission of row.value">{{ permissionLabels[permission] }}</li></ul></div></div></section>
+    <section class="policy-section"><h2>Recuperar datos locales</h2><p>Primero descarga un respaldo de la instalación anterior. La importación es voluntaria y conserva el almacenamiento anterior. El archivo contiene información sensible: guárdalo en una ubicación protegida.</p><div class="record-actions"><ion-button fill="outline" [disabled]="!!ui.pending()" (click)="exportBackup()">Descargar respaldo local</ion-button></div><div *ngIf="backup"><ion-checkbox [(ngModel)]="backupSaved">Confirmo que guardé el archivo de respaldo</ion-checkbox><div class="record-actions"><ion-button [disabled]="!backupSaved || !!ui.pending()" (click)="importBackup()">Importar respaldo</ion-button></div></div></section>
+    <section class="policy-section audit-section"><h2>Actividad administrativa</h2><p>Últimos 100 eventos. Se registran acciones y referencias, sin contenido clínico.</p><p *ngIf="loaded && !audit.length" class="empty-state">Todavía no hay eventos registrados.</p><div class="table-scroll" tabindex="0" aria-label="Registro de auditoría"><table *ngIf="audit.length" class="enterprise-table"><thead><tr><th scope="col">Fecha</th><th scope="col">Acción</th><th scope="col">Módulo</th><th scope="col">Referencia</th><th scope="col">Cuenta</th></tr></thead><tbody><tr *ngFor="let entry of audit"><td>{{ entry.createdAt | date:'dd/MM/yyyy HH:mm' }}</td><td>{{ actionLabels[entry.action] || entry.action }}</td><td>{{ resourceLabels[entry.resource] || entry.resource }}</td><td>{{ entry.resourceId }}</td><td>{{ entry.actorId ? (entry.actorId | slice:0:8) : 'Sistema' }}</td></tr></tbody></table></div></section>
+  </div>
+</ion-content>

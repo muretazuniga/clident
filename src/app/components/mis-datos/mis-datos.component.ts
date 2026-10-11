@@ -1,163 +1,37 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-
-import {
-  trigger,
-  transition,
-  style,
-  animate
-} from '@angular/animations';
-
-import { DBTaskService } from '../../services/dbtask.service';
-
-@Component({
-  selector: 'app-mis-datos',
-  templateUrl: './mis-datos.component.html',
-  styleUrls: ['./mis-datos.component.scss'],
-  standalone: true,
-  imports: [
-    IonicModule,
-    CommonModule
-  ],
-  animations: [
-    trigger('zoomFade', [
-
-      transition(':enter', [
-        style({
-          opacity: 0,
-          transform: 'scale(0.95)'
-        }),
-
-        animate(
-          '200ms ease-out',
-          style({
-            opacity: 1,
-            transform: 'scale(1)'
-          })
-        ),
-      ]),
-
-      transition(':leave', [
-        animate(
-          '150ms ease-in',
-          style({
-            opacity: 0,
-            transform: 'scale(0.95)'
-          })
-        ),
-      ]),
-
-    ]),
-  ],
-})
-export class MisDatosComponent implements OnInit {
-
-  fotoBase64: string | null = null;
-
-  constructor(
-    private db: DBTaskService
-  ) {}
-
-
-  // CARGAR FOTO GUARDADA
-  async ngOnInit(): Promise<void> {
-
-    try {
-
-      this.fotoBase64 =
-        await this.db.obtenerFotoPerfil();
-
-    } catch (error) {
-
-      console.error(
-        'Error recuperando foto:',
-        error
-      );
-
-    }
-
+import { ApiService, AuthService } from '../../services/api.service';
+import { UiService } from '../../services/ui.service';
+import { LegacyStorageService } from '../../services/legacy-storage.service';
+@Component({ selector: 'app-mis-datos', templateUrl: './mis-datos.component.html', styleUrls: ['./mis-datos.component.scss'], standalone: true, imports: [IonicModule, CommonModule, FormsModule] })
+export class MisDatosComponent {
+  fotoBase64: string | null = null; currentPassword = ''; newPassword = ''; confirmation = '';
+  constructor(private api: ApiService, public auth: AuthService, public ui: UiService, private legacy: LegacyStorageService) {}
+  async recoverPhoto() {
+    if (!await this.ui.confirm('¿Recuperar la foto de la instalación anterior para tu cuenta actual? Confirma que esa foto te pertenece.')) return;
+    await this.ui.run(async () => { const image = await this.legacy.readProfilePhoto(); if (!image) throw new Error('No hay una foto en el almacenamiento anterior.'); await this.api.request('me', 'PATCH', { image }); this.fotoBase64 = image; await this.auth.refresh(); }, 'Foto recuperada.');
   }
-
-
-  // SELECCIONAR FOTO DESDE GALERÍA
-  async seleccionarFoto(
-    event: Event
-  ): Promise<void> {
-
-    const input =
-      event.target as HTMLInputElement;
-
-    if (
-      !input.files ||
-      input.files.length === 0
-    ) {
-      return;
-    }
-
-    const archivo =
-      input.files[0];
-
-
-    // Validar que sea imagen
-    if (!archivo.type.startsWith('image/')) {
-
-      console.error(
-        'El archivo seleccionado no es una imagen.'
-      );
-
-      return;
-    }
-
-
-    const reader =
-      new FileReader();
-
-
-    reader.onload =
-      async () => {
-
-        const resultado =
-          reader.result as string;
-
-        this.fotoBase64 =
-          resultado;
-
-        await this.db.guardarFotoPerfil(
-          resultado
-        );
-
-        console.log(
-          'Foto de perfil guardada correctamente'
-        );
-
-      };
-
-
-    reader.onerror =
-      () => {
-
-        console.error(
-          'Error leyendo la imagen.'
-        );
-
-      };
-
-
-    reader.readAsDataURL(
-      archivo
-    );
-
+  async ionViewWillEnter() { await this.ui.run(async () => { const u = await this.auth.refresh(); this.fotoBase64 = u.image; }); }
+  async seleccionarFoto(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    await this.ui.run(async () => {
+      if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type) || file.size > 500000) throw new Error('Selecciona una imagen PNG, JPEG o WebP de hasta 500 KB.');
+      const image = await new Promise<string>((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(String(reader.result)); reader.onerror = () => reject(new Error('No se pudo leer la imagen.')); reader.readAsDataURL(file); });
+      await this.api.request('me', 'PATCH', { image }); this.fotoBase64 = image; await this.auth.refresh();
+    }, 'Foto actualizada.');
   }
-
-
-  // ELIMINAR FOTO
-  async limpiarFoto(): Promise<void> {
-
-    this.fotoBase64 = null;
-
-    await this.db.eliminarFotoPerfil();
-
+  async limpiarFoto() {
+    if (!await this.ui.confirm('¿Eliminar tu foto de perfil?')) return;
+    await this.ui.run(async () => { await this.api.request('me', 'PATCH', { image: null }); this.fotoBase64 = null; await this.auth.refresh(); }, 'Foto eliminada.');
   }
-
+  async changePassword() {
+    await this.ui.run(async () => {
+      if (this.newPassword.length < 12 || this.newPassword !== this.confirmation) throw new Error('Usa al menos 12 caracteres y confirma la misma contraseña.');
+      await this.api.request('auth/change-password', 'POST', { currentPassword: this.currentPassword, newPassword: this.newPassword, revokeOtherSessions: true });
+      this.currentPassword = ''; this.newPassword = ''; this.confirmation = '';
+    }, 'Contraseña actualizada. Las otras sesiones fueron cerradas.');
+  }
 }
